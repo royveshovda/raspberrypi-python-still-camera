@@ -7,6 +7,7 @@ from flask import Flask, Response, request
 try:
   import picamera
 except:
+  print("Cannot import picamera. Try 'pip install picamera'")
   sys.exit(0)
 
 app = Flask(__name__)
