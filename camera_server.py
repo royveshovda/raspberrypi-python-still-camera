@@ -3,6 +3,10 @@ import io
 import time
 import datetime
 from flask import Flask, Response, request
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(7, GPIO.OUT)
 
 try:
   import picamera
@@ -14,6 +18,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def capture_photo():
+  GPIO.output(7, 1)
   try:
     with picamera.PiCamera(sensor_mode=3) as camera:
       camera.resolution = (3280, 2464)
@@ -30,6 +35,7 @@ def capture_photo():
   except:
     return 'Error: camera is unavailable!', 503
   
+  GPIO.output(7, 0)
   filename = now.strftime("%Y_%m_%d_%H_%M_%S")
   r = Response(stream.read(), mimetype='image/jpeg')
   r.headers['Content-Disposition'] = 'inline; filename=qba_' + filename  + '.jpeg'
